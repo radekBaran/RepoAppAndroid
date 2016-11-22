@@ -10,14 +10,20 @@ import android.support.v7.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements RepositoriesAdapter.RepositoryClickAction {
-    private RecyclerView mRepoList;
+    @BindView(R.id.activity_main)
+    protected RecyclerView mRepoList;
+
     private RepositoriesAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // Ustawiamy co ma pokazać się na ekranie na tym oknie (Activity)
+        ButterKnife.bind(this);
 
         // Tworzymy obiekt adaptera, żeby uzupełnić go za chwilę danymi i przekazać do RecyclerView
         // w celu wyświetlenia listy
@@ -42,8 +48,7 @@ public class MainActivity extends AppCompatActivity implements RepositoriesAdapt
         // Przekazujemy listę danych do Adaptera, aby te dane wyświetlić na ekranie !
         mAdapter.setmData(repos);
 
-        // Uzyskujemy dostęp do kontrolki RecyclerView, ponieważ potrzebujemy go skonfigurować
-        mRepoList = (RecyclerView) findViewById(R.id.activity_main);
+
         // Mówimy dla RecyclerView w jakis sposób mają być umieszczone elementy na liście :
         // tutaj używamy klas z Androida, nie musimy implementować własnych
         // (najczęściej LinearLayoutManager - pionowy układ)

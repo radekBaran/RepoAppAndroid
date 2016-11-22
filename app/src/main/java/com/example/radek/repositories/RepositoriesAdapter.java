@@ -8,6 +8,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 // Ta klasa odpowiada dla widoku listy (RecyclerView) na pytania :
 // - ile elementów (getItemCount)
@@ -67,6 +71,8 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapte
     // podczas tworzenia widoku tego wiersza (onCreateViewHolder), tak żebyśmy nie musieli robić tego
     // za każdym razem w funkcji onBindViewHolder.
     public class RepositoryViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(android.R.id.text1)
         TextView mLabel;
 
         // ViewHolder w zmiennej repository przechowuje informacje o biezacym wyswietlanym obiekcie GithubRepository
@@ -74,18 +80,16 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapte
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
-            mLabel = (TextView) itemView.findViewById(android.R.id.text1);
+            ButterKnife.bind(this, itemView);
+        }
 
-            // Podpinamy się pod klikniecie danego wiersza (widoku) na liscie / na ekranie, w celu
-            // poinformowanie mClickListenera o zdarzeniu.
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Wywołujemy zewnętrzny obiekt implementujący interfejs RepositoryClickAction
-                    // podając mu obiekt GithubRepository którey jest aktualnie wyswietlany w kliknietym wierszu tabeli
-                    mClickListener.onClick(mRepository);
-                }
-            });
+        // Podpinamy się pod klikniecie danego wiersza (widoku) na liscie / na ekranie, w celu
+        // poinformowanie mClickListenera o zdarzeniu.
+        @OnClick
+        protected void onViewClick() {
+            // Wywołujemy zewnętrzny obiekt implementujący interfejs RepositoryClickAction
+            // podając mu obiekt GithubRepository którey jest aktualnie wyswietlany w kliknietym wierszu tabeli
+            mClickListener.onClick(mRepository);
         }
     }
 
