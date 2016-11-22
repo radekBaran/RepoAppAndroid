@@ -1,9 +1,13 @@
 package com.example.radek.repositories;
 
+import com.google.gson.annotations.SerializedName;
+
 public class GithubRepository {
 
     private long id;
     private String name;
+
+    @SerializedName("html_url")
     private String htmlUrl;
 
     public long getId() {

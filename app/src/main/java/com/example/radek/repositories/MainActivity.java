@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements RepositoriesAdapt
         mRepoList.setAdapter(mAdapter);
 
         GithubApi api = GithubApiFactory.getApi();
-        api.listRepositories("octocat").enqueue(new Callback<List<GithubRepository>>() {
+        api.listRepositories("radekBaran").enqueue(new Callback<List<GithubRepository>>() {
             @Override
             public void onResponse(Call<List<GithubRepository>> call, Response<List<GithubRepository>> response) {
                 List<GithubRepository> repos = response.body();
