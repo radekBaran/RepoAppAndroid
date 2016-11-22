@@ -1,5 +1,7 @@
 package com.example.radek.repositories;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RepositoriesAdapter.RepositoryClickAction {
     private RecyclerView mRepoList;
     private RepositoriesAdapter mAdapter;
 
@@ -21,16 +23,21 @@ public class MainActivity extends AppCompatActivity {
         // w celu wyświetlenia listy
         mAdapter = new RepositoriesAdapter();
 
+        // Mówimy Adapterowi, ze biezacy obiekt (this) reaguje na zdarzenia klikniecia.
+        mAdapter.setmClickListener(this);
+
         // Tworzymy przykładową listę obiektów do pokazania na ekranie
         List<GithubRepository> repos = new LinkedList<>();
         // Obiekt testowy 1
         GithubRepository r1 = new GithubRepository();
         r1.setName("Repo 1");
+        r1.setHtmlUrl("http://wp.pl");
         repos.add(r1); // Dodanie Repo 1 do kolekcji
 
         // Obiekt testowy 2
         r1 = new GithubRepository();
         r1.setName("Repo 2");
+        r1.setHtmlUrl("http://www.filmweb.pl");
         repos.add(r1); // Dodanie Repo 2 do kolekcji
         // Przekazujemy listę danych do Adaptera, aby te dane wyświetlić na ekranie !
         mAdapter.setmData(repos);
@@ -43,5 +50,11 @@ public class MainActivity extends AppCompatActivity {
         mRepoList.setLayoutManager(new LinearLayoutManager(this));
         // Ustawiamy Adapter na RecyclerView, żeby wiedział co ma wyświetlić.
         mRepoList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onClick(GithubRepository repository) {
+        Intent websiteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(repository.getHtmlUrl()));
+        startActivity(websiteIntent);
     }
 }

@@ -17,6 +17,11 @@ import java.util.List;
 public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapter.RepositoryViewHolder> {
     // Zmianna w ktorej trzymamy zbiór obiektów, które chcemy wyświetlić na ekranie w postaci listy.
     private List<GithubRepository> mData;
+    private RepositoryClickAction mClickListener;
+
+    public void setmClickListener(RepositoryClickAction mClickListener) {
+        this.mClickListener = mClickListener;
+    }
 
     // W związku z tym, że mData jest prywatne - dodaliśmy metodę setData, pozwalającą na ustawienie
     // danych do wyświetlenia.
@@ -48,6 +53,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapte
 
         // 2. Uzupełnij widok wiersza (parametr holder) danymi
         holder.mLabel.setText(repository.getName());
+        holder.mRepository = repository;
     }
 
     // Mówi dla RecyclerView ile elementów ma zostać wyświetlone dla użytkownika na ekranie.
@@ -63,9 +69,29 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RepositoriesAdapte
     public class RepositoryViewHolder extends RecyclerView.ViewHolder {
         TextView mLabel;
 
+        // ViewHolder w zmiennej repository przechowuje informacje o biezacym wyswietlanym obiekcie GithubRepository
+        GithubRepository mRepository;
+
         public RepositoryViewHolder(View itemView) {
             super(itemView);
             mLabel = (TextView) itemView.findViewById(android.R.id.text1);
+
+            // Podpinamy się pod klikniecie danego wiersza (widoku) na liscie / na ekranie, w celu
+            // poinformowanie mClickListenera o zdarzeniu.
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Wywołujemy zewnętrzny obiekt implementujący interfejs RepositoryClickAction
+                    // podając mu obiekt GithubRepository którey jest aktualnie wyswietlany w kliknietym wierszu tabeli
+                    mClickListener.onClick(mRepository);
+                }
+            });
         }
+    }
+
+    // Ten interfejs definiuje nam sposob powiadamiania zainteresowanych z zewnatrz o kliknieciach na wiersze
+    // reprezentujace konkretne obiekty GithubRepository
+    public interface RepositoryClickAction {
+        void onClick(GithubRepository repository);
     }
 }
