@@ -7,11 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements RepositoriesAdapter.RepositoryClickAction {
     @BindView(R.id.activity_main)
@@ -32,29 +34,26 @@ public class MainActivity extends AppCompatActivity implements RepositoriesAdapt
         // Mówimy Adapterowi, ze biezacy obiekt (this) reaguje na zdarzenia klikniecia.
         mAdapter.setmClickListener(this);
 
-        // Tworzymy przykładową listę obiektów do pokazania na ekranie
-        List<GithubRepository> repos = new LinkedList<>();
-        // Obiekt testowy 1
-        GithubRepository r1 = new GithubRepository();
-        r1.setName("Repo 1");
-        r1.setHtmlUrl("http://wp.pl");
-        repos.add(r1); // Dodanie Repo 1 do kolekcji
-
-        // Obiekt testowy 2
-        r1 = new GithubRepository();
-        r1.setName("Repo 2");
-        r1.setHtmlUrl("http://www.filmweb.pl");
-        repos.add(r1); // Dodanie Repo 2 do kolekcji
-        // Przekazujemy listę danych do Adaptera, aby te dane wyświetlić na ekranie !
-        mAdapter.setmData(repos);
-
-
         // Mówimy dla RecyclerView w jakis sposób mają być umieszczone elementy na liście :
         // tutaj używamy klas z Androida, nie musimy implementować własnych
         // (najczęściej LinearLayoutManager - pionowy układ)
         mRepoList.setLayoutManager(new LinearLayoutManager(this));
         // Ustawiamy Adapter na RecyclerView, żeby wiedział co ma wyświetlić.
         mRepoList.setAdapter(mAdapter);
+
+        GithubApi api = GithubApiFactory.getApi();
+        api.listRepositories("octocat").enqueue(new Callback<List<GithubRepository>>() {
+            @Override
+            public void onResponse(Call<List<GithubRepository>> call, Response<List<GithubRepository>> response) {
+                List<GithubRepository> repos = response.body();
+                mAdapter.setmData(repos);
+            }
+
+            @Override
+            public void onFailure(Call<List<GithubRepository>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
